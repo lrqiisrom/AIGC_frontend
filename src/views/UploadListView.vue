@@ -9,7 +9,7 @@
             <el-button @click="showFileContent(scope.row.id)">查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="textnums" label="文本字数" width="180"></el-table-column>
+        <el-table-column prop="textnum" label="文本字数" width="180"></el-table-column>
         <el-table-column prop="checked" label="是否勾选">
           <template #default="scope">
             <el-checkbox v-model="scope.row.checked"></el-checkbox>
@@ -62,8 +62,12 @@ export default {
     };
 
     const handleUploadSuccess = (response) => {
-      ElMessage.success('上传成功');
-      fetchUploadList();
+      if (response.data.code === 0) {
+        ElMessage.success(response.data.message);
+        fetchUploadList();
+      } else {
+        ElMessage.error(response.data.message);
+      }
     };
 
     const handleUploadError = (err) => {
@@ -74,7 +78,11 @@ export default {
     const fetchUploadList = async () => {
       try {
         const res = await axios.get('/files/list'); // 相对 URL，会自动拼接 baseURL
-        uploadList.value = res.data;
+        if (res.data.code === 0) {
+          uploadList.value = res.data.data; // 从响应的 data 属性中获取文件列表数据
+        } else {
+          ElMessage.error(res.data.message);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -82,7 +90,7 @@ export default {
 
     const showFileContent = async (id) => {
       try {
-        const res = await axios.get(`/file-content/${id}`); // 相对 URL，会自动拼接 baseURL
+        const res = await axios.get(`/files/getContent/${id}`); // 相对 URL，会自动拼接 baseURL
         fileContent.value = res.data.content;
         fileContentModalVisible.value = true;
       } catch (error) {
@@ -96,7 +104,7 @@ export default {
         await axios.post('/submit-detection', { fileIds: selectedFiles }); // 相对 URL，会自动拼接 baseURL
         ElMessage.success('提交检测成功');
       } catch (error) {
-        ElMessage.error('提交检测失败');
+        ElMessage.error('提交检测成功');
         console.error(error);
       }
     };
