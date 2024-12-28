@@ -12,7 +12,7 @@
     </el-table>
     <!-- 显示文件内容的弹窗 -->
     <el-dialog v-model="fileContentModalVisible" title="文件内容" width="30%">
-      <div>{{ fileContent }}</div>
+      <div style="line-height: 1.2; font-size: 14px; padding: 8px; margin: 0;">{{ fileContent }}</div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="fileContentModalVisible = false">关闭</el-button>

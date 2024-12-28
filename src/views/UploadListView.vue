@@ -28,7 +28,7 @@
     </div>
     <!-- 显示文件内容的弹窗 -->
     <el-dialog v-model="fileContentModalVisible" title="文件内容" width="30%">
-      <div>{{ fileContent }}</div>
+      <div style="line-height: 1.2; font-size: 14px; margin: 0; padding: 10px;">{{ fileContent }}</div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="fileContentModalVisible = false">关闭</el-button>
@@ -40,13 +40,13 @@
 
 <script>
 import { ref, reactive, getCurrentInstance } from 'vue';
-import FileContentModal from '../components/FileContentModal.vue';
+// import FileContentModal from '../components/FileContentModal.vue';
 import axios from '../services/api.js'; // 导入 Axios 实例
 import { ElMessage, ElDialog } from 'element-plus';
 
 export default {
   components: {
-    FileContentModal,
+    // FileContentModal,
     ElDialog
   },
   setup() {
@@ -82,7 +82,7 @@ export default {
 
     const handleUploadError = (err) => {
       ElMessage.error('上传失败');
-      console.error(err);
+        console.error(err);
     };
 
     const fetchUploadList = async () => {
