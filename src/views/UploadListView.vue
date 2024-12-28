@@ -20,12 +20,21 @@
     <div class="button-container">
       <div class="upload-button-container">
         <input type="file" multiple @change="handleFileUpload" accept=".txt" />
-        <!-- <el-button type="primary" class="custom-button" @click="handleFileUpload">上传文件</el-button> -->
+        <!-- <el-button type="primary" class="custom-button" @click="handleFileContent">上传文件</el-button> -->
       </div>
       <div class="submit-button-container">
         <el-button @click="submitForDetection" type="primary" class="custom-button">提交检测</el-button>
       </div>
     </div>
+    <!-- 显示文件内容的弹窗 -->
+    <el-dialog v-model="fileContentModalVisible" title="文件内容" width="30%">
+      <div>{{ fileContent }}</div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="fileContentModalVisible = false">关闭</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -33,11 +42,12 @@
 import { ref, reactive, getCurrentInstance } from 'vue';
 import FileContentModal from '../components/FileContentModal.vue';
 import axios from '../services/api.js'; // 导入 Axios 实例
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElDialog } from 'element-plus';
 
 export default {
   components: {
-    FileContentModal
+    FileContentModal,
+    ElDialog
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -91,8 +101,12 @@ export default {
     const showFileContent = async (id) => {
       try {
         const res = await axios.get(`/files/getContent/${id}`); // 相对 URL，会自动拼接 baseURL
-        fileContent.value = res.data.content;
-        fileContentModalVisible.value = true;
+        if (res.data.code === 0) {
+          fileContent.value = res.data.data; // 从响应的 data 属性中获取文件内容
+          fileContentModalVisible.value = true;
+        } else {
+          ElMessage.error(res.data.message);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -104,7 +118,7 @@ export default {
         await axios.post('/submit-detection', { fileIds: selectedFiles }); // 相对 URL，会自动拼接 baseURL
         ElMessage.success('提交检测成功');
       } catch (error) {
-        ElMessage.error('提交检测成功');
+        ElMessage.error('提交检测失败');
         console.error(error);
       }
     };
