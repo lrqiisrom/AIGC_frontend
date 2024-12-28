@@ -1,30 +1,50 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <el-container>
+    <el-header>
+      <el-button @click="goToUploadList">上传列表</el-button>
+      <el-button @click="goToDetectionRecord">检测记录</el-button>
+    </el-header>
+    <el-main>
+      <router-view></router-view>
+    </el-main>
+  </el-container>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+<script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+export default {
+  setup() {
+    const router = useRouter();
+    const goToUploadList = () => {
+      router.push('/upload-list');
+    };
+    const goToDetectionRecord = () => {
+      router.push('/detection-record');
+    };
+    return {
+      goToUploadList,
+      goToDetectionRecord
+    };
+  }
+};
+</script>
+
+<style scoped>
+.el-container {
+  height: 100vh;
+}
+.el-header {
+  background-color: #B3C0D1;
+  color: white;
   text-align: center;
-  color: #2c3e50;
+  line-height: 60px;
 }
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.el-main {
+  background-color: #E9EEF3;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
 }
 </style>
