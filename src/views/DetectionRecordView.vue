@@ -23,7 +23,7 @@ export default {
 
     const fetchDetectionRecordList = async () => {
       try {
-        const res = await axios.get('http://your-backend-api/detection-record'); // 后端获取检测记录接口
+        const res = await axios.get('/record/list'); // 后端获取检测记录接口
         detectionRecordList.value = res.data;
       } catch (error) {
         console.error(error);
@@ -43,4 +43,4 @@ div {
   display: flex;
   justify-content: center;
 }
-</style>>
+</style>

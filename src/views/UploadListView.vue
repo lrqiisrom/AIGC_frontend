@@ -115,8 +115,14 @@ export default {
     const submitForDetection = async () => {
       const selectedFiles = uploadList.value.filter(file => file.checked).map(file => file.id);
       try {
-        await axios.post('/submit-detection', { fileIds: selectedFiles }); // 相对 URL，会自动拼接 baseURL
-        ElMessage.success('提交检测成功');
+        const response = await axios.post('/record/addRecords', { fileIds: selectedFiles }); // 相对 URL，会自动拼接 baseURL
+        if (response.data.code === 0) {
+          ElMessage.success('提交检测成功');
+          // 刷新文件列表
+          fetchUploadList(); 
+        } else {
+          ElMessage.error(response.data.message); // 根据后端返回的消息显示错误信息
+        }
       } catch (error) {
         ElMessage.error('提交检测失败');
         console.error(error);
